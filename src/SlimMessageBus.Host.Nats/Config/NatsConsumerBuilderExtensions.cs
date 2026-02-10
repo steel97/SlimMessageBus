@@ -2,22 +2,23 @@ namespace SlimMessageBus.Host.Nats;
 
 public static class NatsConsumerBuilderExtensions
 {
-    public static ConsumerBuilder<T> Queue<T>(this ConsumerBuilder<T> builder, string queue)
+    public static ConsumerBuilder<T> Queue<T>(this ConsumerBuilder<T> natsBuilder, string natsQueue)
     {
-        if (builder is null) throw new ArgumentNullException(nameof(builder));
+        if (natsBuilder is null) throw new ArgumentNullException(nameof(natsBuilder));
+        if (natsQueue is null) throw new ArgumentNullException(nameof(natsQueue));
 
-        builder.Path(queue);
-        builder.ConsumerSettings.PathKind = PathKind.Queue;
-        return builder;
+        natsBuilder.Path(natsQueue);
+        natsBuilder.ConsumerSettings.PathKind = PathKind.Queue;
+        return natsBuilder;
     }
 
-    public static ConsumerBuilder<T> Queue<T>(this ConsumerBuilder<T> builder, string queue, Action<ConsumerBuilder<T>> topicConfig)
+    public static ConsumerBuilder<T> Queue<T>(this ConsumerBuilder<T> natsBuilder, string natsQueue, Action<ConsumerBuilder<T>> natsTopicConfig)
     {
-        if (builder is null) throw new ArgumentNullException(nameof(builder));
-        if (topicConfig is null) throw new ArgumentNullException(nameof(topicConfig));
+        if (natsBuilder is null) throw new ArgumentNullException(nameof(natsBuilder));
+        if (natsTopicConfig is null) throw new ArgumentNullException(nameof(natsTopicConfig));
 
-        var b = builder.Queue(queue);
-        topicConfig(b);
+        var b = natsBuilder.Queue(natsQueue);
+        natsTopicConfig(b);
         return b;
     }
 }

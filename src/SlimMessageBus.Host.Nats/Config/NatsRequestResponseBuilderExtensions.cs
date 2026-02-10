@@ -2,24 +2,24 @@
 
 public static class NatsRequestResponseBuilderExtensions
 {
-    public static RequestResponseBuilder ReplyToQueue(this RequestResponseBuilder builder, string queue)
+    public static RequestResponseBuilder ReplyToQueue(this RequestResponseBuilder natsBuilder, string natsQueue)
     {
-        if (builder is null) throw new ArgumentNullException(nameof(builder));
-        if (queue is null) throw new ArgumentNullException(nameof(queue));
+        if (natsBuilder is null) throw new ArgumentNullException(nameof(natsBuilder));
+        if (natsQueue is null) throw new ArgumentNullException(nameof(natsQueue));
 
-        builder.Settings.Path = queue;
-        builder.Settings.PathKind = PathKind.Queue;
-        return builder;
+        natsBuilder.Settings.Path = natsQueue;
+        natsBuilder.Settings.PathKind = PathKind.Queue;
+        return natsBuilder;
     }
 
-    public static RequestResponseBuilder ReplyToQueue(this RequestResponseBuilder builder, string queue, Action<RequestResponseBuilder> builderConfig)
+    public static RequestResponseBuilder ReplyToQueue(this RequestResponseBuilder builder, string natsQueue, Action<RequestResponseBuilder> natsBuilderConfig)
     {
         if (builder is null) throw new ArgumentNullException(nameof(builder));
-        if (queue is null) throw new ArgumentNullException(nameof(queue));
-        if (builderConfig is null) throw new ArgumentNullException(nameof(builderConfig));
+        if (natsQueue is null) throw new ArgumentNullException(nameof(natsQueue));
+        if (natsBuilderConfig is null) throw new ArgumentNullException(nameof(natsBuilderConfig));
 
-        var b = builder.ReplyToQueue(queue);
-        builderConfig(b);
+        var b = builder.ReplyToQueue(natsQueue);
+        natsBuilderConfig(b);
         return b;
     }
 }
