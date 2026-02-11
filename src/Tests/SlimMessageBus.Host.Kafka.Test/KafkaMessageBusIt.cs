@@ -126,8 +126,9 @@ public class KafkaMessageBusIt(ITestOutputHelper output) : BaseIntegrationTest<K
                     Logger.LogInformation("Consumer stopped at message {MessageCounter}, waiting {DelayTime} before restart", message.Message.Counter, DelayTimeSpan);
                     await consumerControl.Stop();
                     await Task.Delay(DelayTimeSpan);
+                    Console.WriteLine("Kafka start");
                     await consumerControl.Start();
-                    
+
                     // Wait for consumers to fully restart
                     var timeout = Stopwatch.StartNew();
                     while (!consumerControl.IsStarted && timeout.ElapsedMilliseconds < 10000)

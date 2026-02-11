@@ -72,7 +72,7 @@ public partial class HybridMessageBus : IMasterMessageBus, ICompositeMessageBus,
         => Task.WhenAll(_busByName.Values.Select(x => x.AutoStart(cancellationToken)));
 
     public Task Start() =>
-        Task.WhenAll(_busByName.Values.Select(x => x.Start()));
+        Task.WhenAll(_busByName.Values.Select(x => x.Start(false, "hybrid")));
 
     public Task Stop() =>
         Task.WhenAll(_busByName.Values.Select(x => x.Stop()));

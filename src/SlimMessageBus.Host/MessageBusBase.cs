@@ -171,7 +171,7 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
         {
             try
             {
-                await Start().ConfigureAwait(false);
+                await Start(false, "AutoStart").ConfigureAwait(false);
             }
             catch (Exception e)
             {

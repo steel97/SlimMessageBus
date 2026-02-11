@@ -78,6 +78,7 @@ public static class ServiceCollectionExtensions
             // If we are not running in the hosted environment, we need to start the bus ourselves after creation
             // See MessageBusHostedService for the hosted environment
             // Fire and forget
+            Console.WriteLine("svc autostart");
             _ = Task.Run(() => messageBus.AutoStart(default));
 
             return messageBus;

@@ -76,6 +76,7 @@ public class MessageBusBaseTests : IDisposable
     private T CreateMessageBus<T>() where T : IMasterMessageBus
     {
         var bus = (T)BusBuilder.Build();
+        Console.WriteLine("creating bus and starting");
         _ = Task.Run(() => bus.AutoStart(default));
         return bus;
     }
@@ -174,6 +175,7 @@ public class MessageBusBaseTests : IDisposable
         childBusMock1.Should().NotBeNull();
         childBusMock2.Should().NotBeNull();
 
+        Console.WriteLine("pre auto start");
         childBusMock1.Verify(x => x.AutoStart(It.IsAny<CancellationToken>()), Times.Once);
         childBusMock2.Verify(x => x.AutoStart(It.IsAny<CancellationToken>()), Times.Once);
         childBusMock1.Verify(x => x.OnStart(), child1ShouldStart ? Times.Once : Times.Never);
