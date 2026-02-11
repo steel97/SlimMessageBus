@@ -1,5 +1,7 @@
 ﻿namespace SlimMessageBus.Host.Test;
 
+using System.Diagnostics;
+
 public class MessageBusTested : MessageBusBase
 {
     internal int _startedCount;
@@ -45,14 +47,14 @@ public class MessageBusTested : MessageBusBase
 
     protected internal override Task OnStart()
     {
-        Console.WriteLine("inc");
+        Console.WriteLine("inc " + Environment.StackTrace);
         Interlocked.Increment(ref _startedCount);
         return base.OnStart();
     }
 
     protected internal override Task OnStop()
     {
-        Console.WriteLine("dec");
+        Console.WriteLine("dec" + Environment.StackTrace);
         Interlocked.Increment(ref _stoppedCount);
         return base.OnStop();
     }
