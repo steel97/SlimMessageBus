@@ -166,6 +166,7 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
 
     public async virtual Task AutoStart(CancellationToken cancellationToken)
     {
+        await Task.Delay(500);
         // Auto start consumers if enabled for this bus (check first on this bus if setting set, otherwise check parent bus, fallack to true)
         if (Settings.AutoStartConsumers ?? Settings.Parent?.AutoStartConsumers ?? true)
         {

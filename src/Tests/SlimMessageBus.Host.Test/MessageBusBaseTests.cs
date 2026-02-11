@@ -833,6 +833,7 @@ public class MessageBusBaseTests : IDisposable
 
             // trigger lazy bus creation here ahead of the Tasks
             var bus = Bus;
+            bus.Settings.AutoStartConsumers = false;
 
             await bus.Start(true);
 
@@ -844,6 +845,7 @@ public class MessageBusBaseTests : IDisposable
             {
                 await Task.WhenAll(Enumerable.Range(0, 10000).Select(x => bus.Stop(true)).AsParallel());
             }
+            await Task.Delay(1000);
             Console.WriteLine("test end");
             Console.WriteLine("stopped: " + bus._stoppedCount);
             Console.WriteLine("started: " + bus._startedCount);
