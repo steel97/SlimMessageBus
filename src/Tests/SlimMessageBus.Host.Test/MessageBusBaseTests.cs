@@ -774,12 +774,12 @@ public class MessageBusBaseTests : IDisposable
         // trigger lazy bus creation here ahead of the Tasks
         var bus = Bus;
 
-        await bus.Start();
+        await bus.Start(true);
 
         // act
         for (var i = 0; i < 10; i++)
         {
-            await Task.WhenAll(Enumerable.Range(0, 10000).Select(x => bus.Start()).AsParallel());
+            await Task.WhenAll(Enumerable.Range(0, 10000).Select(x => bus.Start(true)).AsParallel());
         }
 
         // assert
