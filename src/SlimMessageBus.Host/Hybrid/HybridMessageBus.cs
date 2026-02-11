@@ -71,10 +71,10 @@ public partial class HybridMessageBus : IMasterMessageBus, ICompositeMessageBus,
     public Task AutoStart(CancellationToken cancellationToken)
         => Task.WhenAll(_busByName.Values.Select(x => x.AutoStart(cancellationToken)));
 
-    public Task Start() =>
+    public Task Start(string method = "unknown") =>
         Task.WhenAll(_busByName.Values.Select(x => x.Start()));
 
-    public Task Stop() =>
+    public Task Stop(string method = "unknown") =>
         Task.WhenAll(_busByName.Values.Select(x => x.Stop()));
 
     #region Implementation of IDisposable and IAsyncDisposable

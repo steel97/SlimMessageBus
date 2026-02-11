@@ -6,7 +6,7 @@ public interface IConsumerControl
     /// Starts message consumption
     /// </summary>
     /// <returns></returns>
-    Task Start();
+    Task Start(string method = "unknown");
 
     /// <summary>
     /// Indicates whether the consumers are started.
@@ -17,5 +17,5 @@ public interface IConsumerControl
     /// Stops message consumption
     /// </summary>
     /// <returns></returns>
-    Task Stop();
+    Task Stop(string method = "unknown");
 }

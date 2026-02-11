@@ -1,6 +1,7 @@
 ﻿namespace SlimMessageBus.Host.Test;
 
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 public class MessageBusTested : MessageBusBase
 {
@@ -45,16 +46,16 @@ public class MessageBusTested : MessageBusBase
 
     #region Overrides of MessageBusBase
 
-    protected internal override Task OnStart()
+    protected internal override Task OnStart(string method = "unknown")
     {
-        Console.WriteLine("inc " + Environment.StackTrace);
+        Console.WriteLine("inc " + method);
         Interlocked.Increment(ref _startedCount);
         return base.OnStart();
     }
 
-    protected internal override Task OnStop()
+    protected internal override Task OnStop(string method = "unknown")
     {
-        Console.WriteLine("dec" + Environment.StackTrace);
+        Console.WriteLine("dec " + method);
         Interlocked.Increment(ref _stoppedCount);
         return base.OnStop();
     }

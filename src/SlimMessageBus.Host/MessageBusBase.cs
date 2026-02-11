@@ -1,6 +1,7 @@
 namespace SlimMessageBus.Host;
 
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
 using SlimMessageBus.Host.Consumer;
@@ -179,7 +180,7 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
         }
     }
 
-    public async Task Start()
+    public async Task Start([CallerMemberName] string method = "unknown")
     {
         lock (_startLock)
         {
@@ -197,7 +198,7 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
             await OnBusLifecycle(MessageBusLifecycleEventType.Starting).ConfigureAwait(false);
 
             await CreateConsumers().ConfigureAwait(false);
-            await OnStart().ConfigureAwait(false);
+            await OnStart(method).ConfigureAwait(false);
             await Task.WhenAll(_consumers.Select(x => x.Start())).ConfigureAwait(false);
 
             await OnBusLifecycle(MessageBusLifecycleEventType.Started).ConfigureAwait(false);
@@ -217,7 +218,7 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
         }
     }
 
-    public async Task Stop()
+    public async Task Stop([CallerMemberName] string method = "unknown")
     {
         lock (_startLock)
         {
@@ -236,7 +237,7 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
             await OnBusLifecycle(MessageBusLifecycleEventType.Stopping).ConfigureAwait(false);
 
             await Task.WhenAll(_consumers.Select(x => x.Stop())).ConfigureAwait(false);
-            await OnStop().ConfigureAwait(false);
+            await OnStop(method).ConfigureAwait(false);
             await DestroyConsumers().ConfigureAwait(false);
 
             await OnBusLifecycle(MessageBusLifecycleEventType.Stopped).ConfigureAwait(false);
@@ -256,8 +257,8 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
         }
     }
 
-    protected internal virtual Task OnStart() => Task.CompletedTask;
-    protected internal virtual Task OnStop() => Task.CompletedTask;
+    protected internal virtual Task OnStart(string method = "unknown") => Task.CompletedTask;
+    protected internal virtual Task OnStop(string method = "unknown") => Task.CompletedTask;
 
     protected void AssertActive()
     {
