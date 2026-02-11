@@ -91,7 +91,7 @@ public abstract partial class AbstractConsumer : HasProviderExtensions, IAsyncDi
         }
     }
 
-    public async Task Start(string method = "unknown")
+    public async Task Start()
     {
         if (IsStarted || _starting)
         {
@@ -122,7 +122,7 @@ public abstract partial class AbstractConsumer : HasProviderExtensions, IAsyncDi
         }
     }
 
-    public async Task Stop(string method = "unknown")
+    public async Task Stop()
     {
         if (!IsStarted || _stopping)
         {

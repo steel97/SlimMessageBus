@@ -46,16 +46,14 @@ public class MessageBusTested : MessageBusBase
 
     #region Overrides of MessageBusBase
 
-    protected internal override Task OnStart(string method = "unknown")
+    protected internal override Task OnStart()
     {
-        Console.WriteLine("inc " + method);
         Interlocked.Increment(ref _startedCount);
         return base.OnStart();
     }
 
-    protected internal override Task OnStop(string method = "unknown")
+    protected internal override Task OnStop()
     {
-        Console.WriteLine("dec " + method);
         Interlocked.Increment(ref _stoppedCount);
         return base.OnStop();
     }

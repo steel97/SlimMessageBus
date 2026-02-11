@@ -70,12 +70,12 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
 
     #region Start & Stop
 
-    private readonly object _startLock = new();
+    public readonly object _startLock = new();
 
-    public bool IsStarted { get; private set; }
+    public bool IsStarted { get; set; }
 
-    protected bool IsStarting { get; private set; }
-    protected bool IsStopping { get; private set; }
+    public bool IsStarting { get; set; }
+    public bool IsStopping { get; set; }
 
     #endregion
 
@@ -180,7 +180,10 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
         }
     }
 
-    public async Task Start([CallerMemberName] string method = "unknown")
+    public async Task Start() => await Start(false, "unk").ConfigureAwait(false);
+    public async Task Stop() => await Stop(false, "unk").ConfigureAwait(false);
+
+    public async Task Start(bool expl, [CallerMemberName] string mname = "")
     {
         lock (_startLock)
         {
@@ -198,7 +201,8 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
             await OnBusLifecycle(MessageBusLifecycleEventType.Starting).ConfigureAwait(false);
 
             await CreateConsumers().ConfigureAwait(false);
-            await OnStart(method).ConfigureAwait(false);
+            Console.WriteLine($"inc {mname}");
+            await OnStart().ConfigureAwait(false);
             await Task.WhenAll(_consumers.Select(x => x.Start())).ConfigureAwait(false);
 
             await OnBusLifecycle(MessageBusLifecycleEventType.Started).ConfigureAwait(false);
@@ -218,7 +222,7 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
         }
     }
 
-    public async Task Stop([CallerMemberName] string method = "unknown")
+    public async Task Stop(bool expl, [CallerMemberName] string mname = "")
     {
         lock (_startLock)
         {
@@ -237,7 +241,8 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
             await OnBusLifecycle(MessageBusLifecycleEventType.Stopping).ConfigureAwait(false);
 
             await Task.WhenAll(_consumers.Select(x => x.Stop())).ConfigureAwait(false);
-            await OnStop(method).ConfigureAwait(false);
+            Console.WriteLine($"dec {mname}");
+            await OnStop().ConfigureAwait(false);
             await DestroyConsumers().ConfigureAwait(false);
 
             await OnBusLifecycle(MessageBusLifecycleEventType.Stopped).ConfigureAwait(false);
@@ -257,10 +262,8 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
         }
     }
 
-    protected internal virtual Task OnStart(string method = "unknown") => Task.CompletedTask;
-    protected internal virtual Task OnStop(string method = "unknown") => Task.CompletedTask;
-    protected internal virtual Task OnStart() => this.OnStart("unknown");
-    protected internal virtual Task OnStop() => this.OnStop("unknown");
+    protected internal virtual Task OnStart() => Task.CompletedTask;
+    protected internal virtual Task OnStop() => Task.CompletedTask;
 
     protected void AssertActive()
     {
