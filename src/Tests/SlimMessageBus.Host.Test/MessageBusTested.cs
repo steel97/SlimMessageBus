@@ -45,12 +45,14 @@ public class MessageBusTested : MessageBusBase
 
     protected internal override Task OnStart()
     {
+        Console.WriteLine("inc");
         Interlocked.Increment(ref _startedCount);
         return base.OnStart();
     }
 
     protected internal override Task OnStop()
     {
+        Console.WriteLine("dec");
         Interlocked.Increment(ref _stoppedCount);
         return base.OnStop();
     }
@@ -66,7 +68,7 @@ public class MessageBusTested : MessageBusBase
         {
             var messageSerializer = SerializerProvider.GetSerializer(path);
             var messagePayload = messageSerializer.Serialize(messageType, messageHeaders, message, null);
-            
+
             // Only deserialize and process response for requests
             if (isRequest)
             {

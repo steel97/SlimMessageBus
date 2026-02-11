@@ -1,8 +1,12 @@
 ﻿namespace SlimMessageBus.Host.Test;
 
+using System.Text;
+
 using SlimMessageBus.Host.Collections;
 using SlimMessageBus.Host.Hybrid;
 using SlimMessageBus.Host.Test.Common;
+
+using Xunit.Abstractions;
 
 public class MessageBusBaseTests : IDisposable
 {
@@ -19,9 +23,15 @@ public class MessageBusBaseTests : IDisposable
     public IList<ProducedMessage> _producedMessages;
 
     public record ProducedMessage(Type MessageType, string Path, object Message);
+    private readonly ITestOutputHelper _outputHelper;
 
-    public MessageBusBaseTests()
+    public MessageBusBaseTests(ITestOutputHelper outputHelper)
     {
+
+
+
+        _outputHelper = outputHelper;
+
         _timeZero = DateTimeOffset.Now;
         _timeProvider = new FakeTimeProvider(_timeZero);
 
@@ -777,27 +787,68 @@ public class MessageBusBaseTests : IDisposable
         bus._startedCount.Should().Be(1);
     }
 
+    private class Converter : TextWriter
+    {
+        ITestOutputHelper _output;
+        public Converter(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+        public override Encoding Encoding
+        {
+            get { return Encoding.UTF8; }
+        }
+        public override void WriteLine(string message)
+        {
+            try
+            {
+                _output.WriteLine(message);
+            }
+            catch { }
+        }
+        public override void WriteLine(string format, params object[] args)
+        {
+            _output.WriteLine(format, args);
+        }
+
+        public override void Write(char value)
+        {
+            throw new NotSupportedException("This text writer only supports WriteLine(string) and WriteLine(string, params object[]).");
+        }
+    }
+
     [Fact]
     public async Task When_Stop_Given_ConcurrentCalls_Then_ItOnlyStopsConsumersOnce()
     {
-        // arrange
-        BusBuilder
-            .Consume<SomeMessage>(x => x.Topic("topic"));
-
-        // trigger lazy bus creation here ahead of the Tasks
-        var bus = Bus;
-
-        await bus.Start();
-
-        // act
-        for (var i = 0; i < 10; i++)
+        var converter = new Converter(_outputHelper);
+        Console.SetOut(converter);
+        Console.WriteLine("start test");
+        //for (var z = 0; z < 1000; z++)
         {
-            await Task.WhenAll(Enumerable.Range(0, 10000).Select(x => bus.Stop()).AsParallel());
-        }
+            // arrange
+            BusBuilder
+                .Consume<SomeMessage>(x => x.Topic("topic"));
 
-        // assert
-        bus._stoppedCount.Should().Be(1);
-        bus._startedCount.Should().Be(1);
+            // trigger lazy bus creation here ahead of the Tasks
+            var bus = Bus;
+
+            await bus.Start();
+
+            Console.WriteLine("stopped: " + bus._stoppedCount);
+            Console.WriteLine("started: " + bus._startedCount);
+
+            // act
+            for (var i = 0; i < 10; i++)
+            {
+                await Task.WhenAll(Enumerable.Range(0, 10000).Select(x => bus.Stop()).AsParallel());
+            }
+            Console.WriteLine("test end");
+            Console.WriteLine("stopped: " + bus._stoppedCount);
+            Console.WriteLine("started: " + bus._startedCount);
+            // assert
+            bus._stoppedCount.Should().Be(1);
+            bus._startedCount.Should().Be(1);
+        }
     }
 
     public class ProduceResponseTests
