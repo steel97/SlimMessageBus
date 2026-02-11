@@ -3,7 +3,7 @@ namespace SlimMessageBus.Host.Nats.Test;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 
-using Config;
+using SlimMessageBus.Host.Nats.Config;
 
 using Serialization.Json;
 

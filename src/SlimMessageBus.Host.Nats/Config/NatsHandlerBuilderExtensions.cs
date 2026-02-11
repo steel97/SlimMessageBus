@@ -8,12 +8,13 @@ public static class NatsHandlerBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="queue">Queue name</param>
     /// <returns></returns>
-    public static HandlerBuilder<TRequest, TResponse> Queue<TRequest, TResponse>(this HandlerBuilder<TRequest, TResponse> builder, string queue)
+    public static HandlerBuilder<TRequest, TResponse> Queue<TRequest, TResponse>(this HandlerBuilder<TRequest, TResponse> natsBuilder, string natsQueue)
     {
-        if (builder is null) throw new ArgumentNullException(nameof(builder));
+        if (natsBuilder is null) throw new ArgumentNullException(nameof(natsBuilder));
+        if (natsQueue is null) throw new ArgumentNullException(nameof(natsQueue));
 
-        builder.Path(queue);
-        builder.ConsumerSettings.PathKind = PathKind.Queue;
-        return builder;
+        natsBuilder.Path(natsQueue);
+        natsBuilder.ConsumerSettings.PathKind = PathKind.Queue;
+        return natsBuilder;
     }
 }

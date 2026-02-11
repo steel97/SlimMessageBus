@@ -1,15 +1,15 @@
-namespace SlimMessageBus.Host.Nats.Test;
+namespace SlimMessageBus.Host.Nats.Test.Config;
 
 using SlimMessageBus.Host.Nats;
 
-public class NatsExtensionsTests
+public class NatsProducerBuilderExtensionsTests
 {
     private class TestMessage { }
 
     private readonly MessageBusSettings _settings;
     private readonly ProducerBuilder<TestMessage> _producerBuilder;
 
-    public NatsExtensionsTests()
+    public NatsProducerBuilderExtensionsTests()
     {
         _settings = new MessageBusSettings();
         var producerSettings = new ProducerSettings { MessageType = typeof(TestMessage) };
