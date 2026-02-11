@@ -56,6 +56,34 @@ public class NatsProducerBuilderExtensionsTests
 
     #endregion
 
+    #region ToTopic Tests
+
+    [Fact]
+    public void When_ToTopic_Given_NullBuilder_Then_ThrowsArgumentNullException()
+    {
+        // Act
+        var action = () => NatsProducerBuilderExtensions.ToTopic<TestMessage>(null);
+
+        // Assert
+        action.Should().Throw<ArgumentNullException>().WithParameterName("natsProducerBuilder");
+    }
+
+    [Fact]
+    public void When_ToTopic_Given_ValidBuilder_Then_SetsQueuePathKind()
+    {
+        // Arrange
+        _producerBuilder.Settings.PathKind = PathKind.Queue; // Set to Queue first to test change
+
+        // Act
+        var result = _producerBuilder.ToTopic();
+
+        // Assert
+        result.Should().BeSameAs(_producerBuilder);
+        _producerBuilder.Settings.PathKind.Should().Be(PathKind.Topic);
+    }
+
+    #endregion
+
     #region ToQueue Tests
 
     [Fact]
