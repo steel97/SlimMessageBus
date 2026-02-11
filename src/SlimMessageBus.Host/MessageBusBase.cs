@@ -259,8 +259,8 @@ public abstract partial class MessageBusBase : IDisposable, IAsyncDisposable,
 
     protected internal virtual Task OnStart(string method = "unknown") => Task.CompletedTask;
     protected internal virtual Task OnStop(string method = "unknown") => Task.CompletedTask;
-    protected internal virtual Task OnStart() => Task.CompletedTask;
-    protected internal virtual Task OnStop() => Task.CompletedTask;
+    protected internal virtual Task OnStart() => this.OnStart("unknown");
+    protected internal virtual Task OnStop() => this.OnStop("unknown");
 
     protected void AssertActive()
     {
